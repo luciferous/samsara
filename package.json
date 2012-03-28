@@ -1,0 +1,29 @@
+{
+  "name": "samsara",
+  "version": "0.0.1",
+  "author": "Neuman Vong <neuman@ashmoremusic.com>",
+  "description": "Arrows",
+  "scripts": {
+    "test": "make test"
+  },
+  "main": "./lib/samsara",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luciferous/samsara.git"
+  },
+  "keywords": [
+    "arrow",
+    "async"
+  ],
+  "dependencies": {
+    "gozala": "git://github.com/Gozala/protocol.git#ec8aac659"
+  },
+  "devDependencies": {
+    "expresso": "0.9.x",
+    "coffee-script": ">=1.1.3"
+  },
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.4"
+  }
+}
