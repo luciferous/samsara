@@ -5,6 +5,7 @@ class Tuple
     return new Tuple @items unless this instanceof Tuple
 
 tupled = (f) -> (t) ->
+  if f instanceof Thunk then f = f.evaluate()
   f.apply null, if t instanceof Tuple then t.items else arguments
 
 class Thunk
@@ -145,6 +146,8 @@ exports.tupled = tupled
 exports.Thunk = Thunk
 exports.Left = Left
 exports.Right = Right
+exports.Proc = Proc
+exports.runProc = runProc
 
 if require.main == module
   assert = require "assert"
