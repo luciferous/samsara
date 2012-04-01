@@ -133,6 +133,10 @@ Arrow Cont,
     r2 = (args...) -> g.apply null, args.concat(r)
     f.apply null, xs.concat(r2)
 
+ArrowChoice Cont,
+  left: (f) -> Cont (x, r) ->
+    if x instanceof Left then f.apply(null, [x.val, dot(r, Left)]) else r x
+
 exports.arr = arr
 exports.compose = compose
 exports.first = first
@@ -193,5 +197,8 @@ if require.main == module
 
   zoo = Proc(bar).then(coo).then((x) -> x[0]).then(qoo)
   runProc zoo, 4, -> console.log "results:", arguments...
+
+  joo = Proc(constA Left 5).then(fanin coo, qoo)
+  runProc joo, null, -> console.log "joo:", arguments...
 
   setTimeout (-> x() for x in defer), 500
