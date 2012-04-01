@@ -3,4 +3,4 @@ assert = require "assert"
 
 exports.testId = ->
   foo = ->
-  assert.equal foo, arr(foo)
+  assert.equal foo, arr(foo)(foo)
