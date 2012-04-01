@@ -32,14 +32,15 @@ class Proc
     if @target instanceof Proc
       @target = @target.target
   then: (next) ->
-    if next instanceof Proc
-      next = next.target
-    if @target instanceof Function
-      Proc compose(arr(next, @target), next)
-    else if next instanceof Function
-      Proc compose(@target, arr(@target, next))
-    else
+    if next instanceof Proc then next = next.target
+    if @target.constructor == next.constructor
       Proc compose(@target, next)
+    else if @target instanceof Function
+      Proc leftComp(@target, next)
+    else if next instanceof Function
+      Proc rightComp(@target, next)
+    else throw new TypeError "Unexpected #{next.constructor.name} type"
+
   apply: (ctx, args) ->
     @target.apply ctx, args
 
@@ -51,8 +52,13 @@ swap = (x, y) -> Tuple [y, x]
 dup = (x) -> Tuple [x, x]
 id = (x) -> x
 
+leftComp = (f, a) ->
+  compose arr(a)(f), a
+rightComp = (a, f) ->
+  compose a, arr(a)(f)
+
 Arrow = protocol
-  arr: [protocol, "f"]
+  arr: [protocol]
   compose: [protocol, "g"]
   first: [protocol]
   second: [protocol]
@@ -71,7 +77,7 @@ __Arrow =
 Arrow Object, __Arrow
 
 Arrow Function,
-  arr: (f, p) -> if p? then p else f
+  arr: (p) -> (f) -> f
   first: (f) -> split f, id
   second: (f) -> split id, f
   split: (f, g) -> (x, y) ->
@@ -122,7 +128,7 @@ class Cont
     @f.apply(null, args.concat [r])
 
 Arrow Cont,
-  arr: (p, f) -> Cont (xs..., r) -> r f.apply(null, xs)
+  arr: (p) -> (f) -> Cont (xs..., r) -> r f.apply(null, xs)
   compose: (f, g) -> Cont (xs..., r) ->
     r2 = (args...) -> g.apply null, args.concat(r)
     f.apply null, xs.concat(r2)
@@ -155,7 +161,7 @@ if require.main == module
   foo = (x) -> x + 1
   bar = (x) -> x * 3
 
-  assert.equal foo, (arr foo)
+  assert.equal foo, arr(foo)(foo)
 
   console.log runProc Proc(foo).then(bar), 3
   console.log runProc (first bar), 1, 2
@@ -163,7 +169,7 @@ if require.main == module
   console.log runProc split(foo, bar), 1, 2
   console.log runProc fanout(foo, bar), 1
 
-  constA = arr (x) -> (_) -> x
+  constA = (x) -> (_) -> x
 
   cons = (x, y) -> [x].concat(y)
   listcase = (x) ->
@@ -171,10 +177,11 @@ if require.main == module
     else Right Tuple [x[0], x[1..]]
 
   mapA = (f) ->
-    Proc( arr listcase ).
+    arr_ = arr(f)
+    Proc( arr_ listcase ).
     then( fanin constA([])
         , Proc( split f, Thunk(mapA, [f]) ).
-          then( arr cons ) )
+          then( arr_ cons ) )
 
   console.log runProc (mapA bar), [1, 2, 3]
 
