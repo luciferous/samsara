@@ -18,6 +18,30 @@ runProc countDown, ->
 
 ## Install
 
+It's not necessary to install samsara to use it in a web browser, just link to
+it with a `script` tag.
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <script src="//samsara-cdn.appspot.com/samsara-latest.js"></script>
+```
+
+To use it as a Node module:
+
 ```sh
 $ npm install samsara
 ```
+
+## Contribute
+
+```sh
+$ git clone git://github.com/luciferous/samsara.git
+$ cd samsara
+$ npm install --dev
+$ make dist
+```
+
+[browserify]: https://github.com/substack/node-browserify
+[coffee-script]: https://github.com/jashkenas/coffee-script
