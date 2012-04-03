@@ -1,4 +1,4 @@
-# samsara [![Build Status](https://secure.travis-ci.org/luciferous/samsara.png?branch=v2)](http://travis-ci.org/luciferous/samsara)
+# samsara [![Build Status](https://secure.travis-ci.org/luciferous/samsara.png?branch=master)](http://travis-ci.org/luciferous/samsara)
 
 *To flow on, to perpetually wander, to pass through states of existence.*
 
