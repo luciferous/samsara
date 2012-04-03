@@ -1,12 +1,13 @@
 {
   "name": "samsara",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Neuman Vong <neuman@ashmoremusic.com>",
   "description": "Arrows",
   "scripts": {
+    "prepublish": "make lib",
     "test": "make test"
   },
-  "main": "./lib/samsara",
+  "main": "./lib/samsara.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/luciferous/samsara.git"
