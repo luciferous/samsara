@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Samsara by luciferous</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Samsara</h1>
+        <p>Haskell Arrow combinators in Coffeescript.</p>
+        <p class="view"><a href="https://github.com/luciferous/samsara">View the Project on GitHub <small>luciferous/samsara</small></a></p>
+        <ul>
+          <li><a href="https://github.com/luciferous/samsara/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/luciferous/samsara/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/luciferous/samsara">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>samsara <a href="http://travis-ci.org/luciferous/samsara"><img src="https://secure.travis-ci.org/luciferous/samsara.png?branch=master" alt="Build Status"></a>
+</h1>
+
+<p><em>To flow on, to perpetually wander, to pass through states of existence.</em></p>
+
+<div class="highlight">
+<pre><span class="p">{</span> <span class="nx">Cont</span> <span class="p">,</span> <span class="nx">Proc</span> <span class="p">,</span> <span class="nx">runProc</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span> <span class="s">"samsara"</span>
+
+<span class="nv">print = </span><span class="nf">(x) -&gt;</span> <span class="o">-&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">x</span>
+<span class="nv">pause = </span><span class="nx">Cont</span> <span class="nf">(_, r) -&gt;</span> <span class="nx">setTimeout</span> <span class="nx">r</span><span class="p">,</span> <span class="mi">1000</span>
+
+<span class="nv">countDown = </span><span class="nx">Proc</span><span class="p">(</span> <span class="nx">print</span> <span class="mi">3</span> <span class="p">).</span><span class="k">then</span><span class="p">(</span> <span class="nx">pause</span> <span class="p">).</span>
+            <span class="k">then</span><span class="p">(</span> <span class="nx">print</span> <span class="mi">2</span> <span class="p">).</span><span class="k">then</span><span class="p">(</span> <span class="nx">pause</span> <span class="p">).</span>
+            <span class="k">then</span><span class="p">(</span> <span class="nx">print</span> <span class="mi">1</span> <span class="p">).</span><span class="k">then</span><span class="p">(</span> <span class="nx">pause</span> <span class="p">).</span>
+            <span class="k">then</span><span class="p">(</span> <span class="nx">print</span> <span class="s">"Lift off!"</span> <span class="p">)</span>
+
+<span class="nx">runProc</span> <span class="nx">countDown</span><span class="p">,</span> <span class="o">-&gt;</span>
+</pre>
+</div>
+
+
+<h2>Install</h2>
+
+<p>It's not necessary to install samsara to use it in a web browser, just link to
+it with a <code>script</code> tag.</p>
+
+<div class="highlight">
+<pre><span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//samsara-cdn.appspot.com/samsara.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre>
+</div>
+
+
+<p>To use it as a Node module:</p>
+
+<div class="highlight">
+<pre><span class="nv">$ </span>npm install samsara
+</pre>
+</div>
+
+
+<h2>Contribute</h2>
+
+<div class="highlight">
+<pre><span class="nv">$ </span>git clone git://github.com/luciferous/samsara.git
+<span class="nv">$ </span><span class="nb">cd </span>samsara
+<span class="nv">$ </span>npm install --dev
+<span class="nv">$ </span>make dist
+</pre>
+</div>
+
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/luciferous">luciferous</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
