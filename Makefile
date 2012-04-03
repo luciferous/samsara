@@ -1,3 +1,5 @@
+GAEDIR=$(HOME)/lib/google_appengine/1.6.4
+
 dist: dist/samsara.js dist/samsara.min.js
 
 dist/samsara.js: lib/samsara.js
@@ -11,6 +13,9 @@ dist/samsara.min.js: dist/samsara.js
 lib: src
 	node_modules/coffee-script/bin/coffee -c -o lib src
 	touch lib
+
+cdn: dist
+	$(GAEDIR)/appcfg.py update .
 
 test:
 	@NODE_PATH=src expresso

@@ -1,0 +1,13 @@
+application: samsara-cdn
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+skip_files:
+- ^((?!dist).*)$
+
+handlers:
+- url: /
+  static_dir: dist
+  secure: optional

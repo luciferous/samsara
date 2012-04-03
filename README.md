@@ -25,7 +25,7 @@ it with a `script` tag.
 <!doctype html>
 <html>
   <head>
-    <script src="//samsara-cdn.appspot.com/samsara-latest.js"></script>
+    <script src="//samsara-cdn.appspot.com/samsara.min.js"></script>
 ```
 
 To use it as a Node module:
