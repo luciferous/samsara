@@ -8,6 +8,8 @@ tupled = (f) -> (t) ->
   if f instanceof Thunk then f = f.evaluate()
   f.apply null, if t instanceof Tuple then t.items else arguments
 
+untuple = (t) -> if t instanceof Tuple then t.items else [t]
+
 class Thunk
   constructor: (@f, @xs=[]) ->
     return new Thunk @f, @xs unless this instanceof Thunk
@@ -50,7 +52,7 @@ runProc = (proc, args...) ->
 dot = (f, g) -> (x) -> f (g x)
 swap = (x, y) -> Tuple [y, x]
 dup = (x) -> Tuple [x, x]
-id = (x) -> x
+id = (args...) -> if args.length == 1 then args[0] else Tuple args
 
 leftComp = (f, a) ->
   compose arr(a)(f), a
@@ -83,7 +85,7 @@ Arrow Function,
   split: (f, g) -> (x, y) ->
     if f instanceof Thunk then f = f.evaluate()
     if g instanceof Thunk then g = g.evaluate()
-    Tuple [f.apply(null, [x]), g.apply(null, [y])]
+    Tuple [f.apply(null, untuple x), g.apply(null, untuple y)]
 
 ArrowChoice = protocol
   left: [protocol]
@@ -135,7 +137,9 @@ Arrow Cont,
 
 ArrowChoice Cont,
   left: (f) -> Cont (x, r) ->
-    if x instanceof Left then f.apply(null, [x.val, dot(r, Left)]) else r x
+    if x instanceof Left
+      f.apply null, untuple(x.val).concat(dot r, Left)
+    else r x
 
 exports.arr = arr
 exports.compose = compose
