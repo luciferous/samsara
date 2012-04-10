@@ -16,6 +16,10 @@ countDown = Proc( print 3 ).then( pause ).
 runProc countDown, ->
 ```
 
+## Examples
+
+- [Drag and drop](http://jsbin.com/etegid/55)
+
 ## Install
 
 It's not necessary to install samsara to use it in a web browser, just link to
