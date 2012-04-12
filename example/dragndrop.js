@@ -1,4 +1,4 @@
-// <script type="text/javascript" src="/dist/samsara.min.js"></script>
+// <script type="text/javascript" src="//samsara-cdn.appspot.com/samsara.min.js"></script>
 // <script type="text/javascript">
 // window.onload = function() {
 //   var S = require("/samsara");

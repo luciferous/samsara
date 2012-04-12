@@ -18,7 +18,7 @@ runProc countDown, ->
 
 ## Examples
 
-- [Drag and drop](http://jsbin.com/etegid/56)
+- [Drag and drop](http://lcfrs.org/samsara/docs/dragndrop.html)
 
 ## Install
 

@@ -21,7 +21,7 @@ test: lib
 	@NODE_PATH=lib expresso
 	node_modules/coffee-script/bin/coffee poormanstest.coffee
 
-docs:
+docs: example/*
 	./node_modules/.bin/docco example/*.js
 
 serve: dist
