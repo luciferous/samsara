@@ -1,0 +1,118 @@
+<!DOCTYPE html>  <html> <head>   <title>dragndrop.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               dragndrop.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <script type="text/javascript" src="//samsara-cdn.appspot.com/samsara.min.js"></script>
+<script type="text/javascript">
+window.onload = function() {
+  var S = require("/samsara");
+
+  function noop() {}
+
+  function mousedown(o, c) {
+    var handler = function handler(e) {
+      e.preventDefault();
+      o.removeEventListener("mousedown", handler, false);
+      c(e);
+    };
+    o.addEventListener("mousedown", handler, false);
+  }
+
+  function updatePos(e, downE) {
+    var x = e.clientX - (downE.offsetX || downE.layerX),
+        y = e.clientY - (downE.offsetY || downE.layerY);
+    downE.target.style.left = x + "px";
+    downE.target.style.top = y + "px";
+  }
+
+  function register(downE, c) {
+    function handler(e) {
+      switch (e.type) {
+        case "mousemove": c(S.Right(S.Tuple([e, downE]))); break;
+        case "mouseup": c(S.Left(S.Tuple([e, handler]))); break;
+      }
+    }
+    window.addEventListener("mouseup", handler, false);
+    window.addEventListener("mousemove", handler, false);
+  }
+
+  function deregister(e, handler) {
+    window.removeEventListener("mouseup", handler, false);
+    window.removeEventListener("mousemove", handler, false);
+    return e.target;
+  }
+
+  var arr = S.arr(S.Cont());
+
+  var dragDrop = S.compose
+    ( S.Cont(mousedown)
+    , S.compose
+      ( S.Cont(register)
+      , S.fanin
+        ( arr(deregister)
+          , S.compose(arr(updatePos), S.Cont(noop)))));
+
+  var box = document.getElementById("box");
+
+  (function recurse() {
+    S.runProc(S.compose(dragDrop, recurse), box, noop);
+  })();
+};
+</script>
+
+<div style="height:100px;width:100px;border:4px dotted black;padding:10px;float:left">
+<div id="box" style="position:absolute;height:100px;width:100px;background:red"></div> 
+
+<p></div><h3 style="margin: 50px; float: left">&larr; Try it out!</h3></p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">S</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;/samsara&quot;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>A no-op function which takes any input, but does nothing. When used as a
+<code>Cont</code>, this terminates the continuation passing.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">noop</span><span class="p">()</span> <span class="p">{}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Listen for only one <code>mousedown</code> event on the DOM element <code>o</code>, when it occurs
+run the continuation <code>c</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">mousedown</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="nx">o</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">&quot;mousedown&quot;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+    <span class="nx">c</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+  <span class="p">};</span>
+  <span class="nx">o</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;mousedown&quot;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Given a <code>mousemove</code> event <code>e</code> and a <code>mousedown</code> event <code>downE</code>, update the
+DOM element's position.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">updatePos</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">downE</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">clientX</span> <span class="o">-</span> <span class="p">(</span><span class="nx">downE</span><span class="p">.</span><span class="nx">offsetX</span> <span class="o">||</span> <span class="nx">downE</span><span class="p">.</span><span class="nx">layerX</span><span class="p">),</span>
+      <span class="nx">y</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">clientY</span> <span class="o">-</span> <span class="p">(</span><span class="nx">downE</span><span class="p">.</span><span class="nx">offsetY</span> <span class="o">||</span> <span class="nx">downE</span><span class="p">.</span><span class="nx">layerY</span><span class="p">);</span>
+  <span class="nx">downE</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">+</span> <span class="s2">&quot;px&quot;</span><span class="p">;</span>
+  <span class="nx">downE</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="nx">y</span> <span class="o">+</span> <span class="s2">&quot;px&quot;</span><span class="p">;</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Listen for <code>mouseup</code> and <code>mousemove</code> events, and on each one run the
+continuation <code>c</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">register</span><span class="p">(</span><span class="nx">downE</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">function</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">case</span> <span class="s2">&quot;mousemove&quot;</span><span class="o">:</span> <span class="nx">c</span><span class="p">(</span><span class="nx">S</span><span class="p">.</span><span class="nx">Right</span><span class="p">(</span><span class="nx">S</span><span class="p">.</span><span class="nx">Tuple</span><span class="p">([</span><span class="nx">e</span><span class="p">,</span> <span class="nx">downE</span><span class="p">])));</span> <span class="k">break</span><span class="p">;</span>
+      <span class="k">case</span> <span class="s2">&quot;mouseup&quot;</span><span class="o">:</span> <span class="nx">c</span><span class="p">(</span><span class="nx">S</span><span class="p">.</span><span class="nx">Left</span><span class="p">(</span><span class="nx">S</span><span class="p">.</span><span class="nx">Tuple</span><span class="p">([</span><span class="nx">e</span><span class="p">,</span> <span class="nx">handler</span><span class="p">])));</span> <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;mouseup&quot;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;mousemove&quot;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Stop listening.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">deregister</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">&quot;mouseup&quot;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">&quot;mousemove&quot;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">;</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Specialized implementation of arr from <code>Cont</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nx">S</span><span class="p">.</span><span class="nx">arr</span><span class="p">(</span><span class="nx">S</span><span class="p">.</span><span class="nx">Cont</span><span class="p">());</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>This is the arrow responsible for drag-n-drop behavior. It is roughly
+analogous to the following imperative-style pseudo-code:</p>
+
+<pre><code>function dragDrop(domObject) {
+  var downE = mousedown(domObject);
+  while (true) {
+    var event = register();
+    if (event.type == "mousemove") {
+      updatePos(event, downE);
+    } else if (event.type == "mouseup") {
+      break;
+    }
+  }
+  return domObject;
+}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">dragDrop</span> <span class="o">=</span> <span class="nx">S</span><span class="p">.</span><span class="nx">compose</span>
+  <span class="p">(</span> <span class="nx">S</span><span class="p">.</span><span class="nx">Cont</span><span class="p">(</span><span class="nx">mousedown</span><span class="p">)</span>
+  <span class="p">,</span> <span class="nx">S</span><span class="p">.</span><span class="nx">compose</span>
+    <span class="p">(</span> <span class="nx">S</span><span class="p">.</span><span class="nx">Cont</span><span class="p">(</span><span class="nx">register</span><span class="p">)</span>
+    <span class="p">,</span> <span class="nx">S</span><span class="p">.</span><span class="nx">fanin</span>
+      <span class="p">(</span> <span class="nx">arr</span><span class="p">(</span><span class="nx">deregister</span><span class="p">)</span>
+      <span class="p">,</span> <span class="nx">S</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">arr</span><span class="p">(</span><span class="nx">updatePos</span><span class="p">),</span> <span class="nx">S</span><span class="p">.</span><span class="nx">Cont</span><span class="p">(</span><span class="nx">noop</span><span class="p">)))));</span>
+
+<span class="kd">var</span> <span class="nx">box</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>When dragDrop finishes, run it again with the same arguments.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span> <span class="nx">recurse</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">S</span><span class="p">.</span><span class="nx">runProc</span><span class="p">(</span><span class="nx">S</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">dragDrop</span><span class="p">,</span> <span class="nx">recurse</span><span class="p">),</span> <span class="nx">box</span><span class="p">,</span> <span class="nx">noop</span><span class="p">);</span>
+<span class="p">})();</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
