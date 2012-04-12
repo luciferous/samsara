@@ -17,7 +17,7 @@
     "async"
   ],
   "dependencies": {
-    "protocol": "git://github.com/Gozala/protocol.git#ec8aac659"
+    "protocol": "git://github.com/Gozala/protocol.git#v0.3.1"
   },
   "devDependencies": {
     "expresso": "0.9.x",
